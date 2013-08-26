@@ -1,7 +1,7 @@
 /**
  * Implements hook_entity_post_render_content().
  */
-function pathauto_entity_post_render_content(entity) {
+function pathfix_entity_post_render_content(entity) {
   try {
     
     // Replace relative image paths with an absolute path to the Drupal site.

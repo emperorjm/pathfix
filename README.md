@@ -1,4 +1,4 @@
-pathauto
+pathfix
 ========
 
-The pathauto module for DrupalGap.
+The pathfix module for DrupalGap.
