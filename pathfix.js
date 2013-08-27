@@ -32,7 +32,7 @@ function pathfix_entity_post_render_content(entity) {
             //return s.Substring(1, s.Length - 2);
           //}
           var url = match.substring(6, match.length-1);
-          replacement = 'onclick="javascript:window.open(\'' + url + '\', \'_blank\', \'location=yes\');"';
+          replacement = 'href="#" onclick="javascript:window.open(\'' + url + '\', \'_blank\', \'location=yes\');"';
           entity.content = entity.content.replace(match, replacement);
       });
     }
@@ -44,21 +44,18 @@ function pathfix_entity_post_render_content(entity) {
  * Implements hook_404().
  */
 function pathfix_404(router_path) {
-  dpm('pathfix_404');
-  var invocation_result = false;
+  var path = false;
   // Is there an alias for this router_path available on the Drupal site?
   drupalgap.services.drupalgap_pathfix.url_alias.call({
       alias:router_path,
       async:false,
       success:function(data) {
         if (data && data[0]) {
-          router_path = data[0];
-          invocation_result = data[0];
-          dpm(router_path);
+          path = data[0];
         }
       }
   });
-  return invocation_result;
+  return path;
 }
 
 /**
@@ -77,7 +74,7 @@ drupalgap.services.drupalgap_pathfix = {
           api_options.data = 'alias=' + options.alias;
           drupalgap.api.call(api_options);
         }
-        else { drupalgap_error("missing 'url_alias' option!"); }
+        else { drupalgap_error("missing 'alias' option!"); }
       }
       catch (error) {
         navigator.notification.alert(
