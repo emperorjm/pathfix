@@ -40,3 +40,54 @@ function pathfix_entity_post_render_content(entity) {
   catch (error) { drupalgap_error(error); }
 }
 
+/**
+ * Implements hook_404().
+ */
+function pathfix_404(router_path) {
+  dpm('pathfix_404');
+  var invocation_result = false;
+  // Is there an alias for this router_path available on the Drupal site?
+  drupalgap.services.drupalgap_pathfix.url_alias.call({
+      alias:router_path,
+      async:false,
+      success:function(data) {
+        if (data && data[0]) {
+          router_path = data[0];
+          invocation_result = data[0];
+          dpm(router_path);
+        }
+      }
+  });
+  return invocation_result;
+}
+
+/**
+ * DrupalGap Pathfix Services.
+ */
+drupalgap.services.drupalgap_pathfix = {
+  url_alias:{
+    options:{
+      type:'post',
+      path:'drupalgap_pathfix/url_alias.json',
+    },
+    'call':function(options){
+      try {
+        if (typeof options.alias !== 'undefined') {
+          var api_options = drupalgap_chain_callbacks(drupalgap.services.drupalgap_pathfix.url_alias.options, options);
+          api_options.data = 'alias=' + options.alias;
+          drupalgap.api.call(api_options);
+        }
+        else { drupalgap_error("missing 'url_alias' option!"); }
+      }
+      catch (error) {
+        navigator.notification.alert(
+          error,
+          function(){},
+          'DrupalGap Pathfix Error',
+          'OK'
+        );
+      }
+    }
+  }
+};
+
