@@ -10,12 +10,16 @@ function pathfix_entity_post_render_content(entity) {
     entity.content = entity.content.replace(regex, replacement);
     
     // Replace internal links with drupalgap_goto() calls.
-    // kodos syntax backup: href=['"]/([-A-Za-z0-9+&@#\/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#\/%=~_()|])['"]
-    regex = /href=['"]\/([-A-Za-z0-9+&@#\/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#\/%=~_()|])['"]/g;
+    // kodos syntax backup: href=['"]/*([-A-Za-z0-9+&@#\/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#\/%=~_()|])['"]
+    regex = /href=['"]\/*([-A-Za-z0-9+&@#\/%?=~_()|!:,.;]*[-A-Za-z0-9+&@#\/%=~_()|])['"]/g;
     var matches = entity.content.match(regex);
     if (matches && matches.length) {
       $.each(matches, function(index, match){
-          replacement = 'onclick="javasciprt:drupalgap_goto(\'' + match.substring(7, match.length-1) + '\');"';
+          console.log(match);
+          // Determine the start position path within the match
+          var start = 6;
+          if (match.indexOf('/') == 6) { start = 7; }
+          replacement = 'href="" onclick="javasciprt:drupalgap_goto(\'' + match.substring(start, match.length-1) + '\');"';
           entity.content = entity.content.replace(match, replacement);
       });
     }
